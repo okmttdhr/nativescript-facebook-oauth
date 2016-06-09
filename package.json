@@ -1,0 +1,11 @@
+{
+  "name": "nativescript-facebook-login-test",
+  "main": "facebook-handler.js",
+  "version": "0.0.1",
+  "nativescript": {
+    "platforms": {
+      "ios": "2.0.0",
+      "android": "2.0.0"
+    }
+  }
+}
