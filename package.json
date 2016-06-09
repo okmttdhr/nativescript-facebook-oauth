@@ -1,11 +1,27 @@
 {
-  "name": "nativescript-facebook-login-test",
-  "main": "facebook-handler.js",
+  "name": "nativescript-facebook-login2",
   "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "$(npm bin)/tsc"
+  },
   "nativescript": {
     "platforms": {
       "ios": "2.0.0",
       "android": "2.0.0"
     }
+  },
+  "typescript": {
+    "definition": "index.d.ts"
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "typescript": "^1.8.10"
+  },
+  "dependencies": {
+    "tns-core-modules": "^2.0.1"
   }
 }

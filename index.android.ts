@@ -1,7 +1,7 @@
 import applicationModule = require("application");
 
 let _isInit: boolean = false;
-let _act: android.app.Activity;
+let _act;
 let mCallbackManager;
 let loginManager;
 
