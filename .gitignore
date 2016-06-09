@@ -1,0 +1,5 @@
+sample/platforms/
+sample/lib/
+sample/hooks/
+sample/app/*.js
+sample/app/*.d.ts
