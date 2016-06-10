@@ -55,7 +55,7 @@ export class HelloWorldModel extends observable.Observable {
 
     public onTap() {
         if (topmost().ios) {
-          FacebookLoginHandler.init(2);
+          FacebookLoginHandler.init();
         } else if (topmost().android) {
           FacebookLoginHandler.init();
         }

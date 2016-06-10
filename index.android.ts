@@ -20,8 +20,7 @@ export function init(): boolean {
       // This solve the case when user changes accounts error code 304
       loginManager.logOut();
 
-      _isInit = true;
-      return true;
+      return _isInit = true;
     } catch (e) {
       return false;
     }
