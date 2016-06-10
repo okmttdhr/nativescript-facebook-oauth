@@ -7,19 +7,21 @@ declare type NSDictionary = any;
 declare const FBSDKApplicationDelegate: any;
 declare const FBSDKAppEvents: any;
 
-class MyDelegate extends UIResponder implements UIApplicationDelegate {
-  public static ObjCProtocols = [UIApplicationDelegate];
+if (application.ios) {
+  class MyDelegate extends UIResponder implements UIApplicationDelegate {
+    public static ObjCProtocols = [UIApplicationDelegate];
 
-  applicationDidFinishLaunchingWithOptions(application: UIApplication, launchOptions: NSDictionary): boolean {
-    return FBSDKApplicationDelegate.sharedInstance().applicationDidFinishLaunchingWithOptions(application, launchOptions);
+    applicationDidFinishLaunchingWithOptions(application: UIApplication, launchOptions: NSDictionary): boolean {
+      return FBSDKApplicationDelegate.sharedInstance().applicationDidFinishLaunchingWithOptions(application, launchOptions);
+    }
+    applicationOpenURLSourceApplicationAnnotation(application, url, sourceApplication, annotation) {
+      return FBSDKApplicationDelegate.sharedInstance().applicationOpenURLSourceApplicationAnnotation(application, url, sourceApplication, annotation);
+    }
+    applicationDidBecomeActive(application: UIApplication): void {
+      FBSDKAppEvents.activateApp();
+    }
   }
-  applicationOpenURLSourceApplicationAnnotation(application, url, sourceApplication, annotation) {
-    return FBSDKApplicationDelegate.sharedInstance().applicationOpenURLSourceApplicationAnnotation(application, url, sourceApplication, annotation);
-  }
-  applicationDidBecomeActive(application: UIApplication): void {
-    FBSDKAppEvents.activateApp();
-  }
+  application.ios.delegate = MyDelegate;
 }
 
-application.ios.delegate = MyDelegate;
 application.start({ moduleName: "main-page" });
