@@ -1,6 +1,7 @@
 import application = require("application");
 import observable = require("data/observable");
 const FacebookLoginHandler = require("nativescript-facebook-login2").FacebookLoginHandler;
+// import { FacebookLoginHandler } from "nativescript-facebook-login2";
 
 const successCallback = function(result) {
     let token;
@@ -18,23 +19,24 @@ const cancelCallback = function() {
 
 const failCallback = function(error) {
     let errorMessage = "Error with Facebook";
-    if (error) {
-        if (application.ios) {
-            if (error.localizedDescription) {
-                errorMessage += ": " + error.localizedDescription;
-            } else if (error.code) {
-                errorMessage += ": Code " + error.code;
-            } else {
-                errorMessage += ": " + error;
-            }
-        } else if (application.android) {
-            if (error.getErrorMessage) {
-                errorMessage += ": " + error.getErrorMessage();
-            } else if (error.getErrorCode) {
-                errorMessage += ": Code " + error.getErrorCode();
-            } else {
-                errorMessage += ": " + error;
-            }
+    if (!error) {
+      return;
+    }
+    if (application.ios) {
+        if (error.localizedDescription) {
+            errorMessage += ": " + error.localizedDescription;
+        } else if (error.code) {
+            errorMessage += ": Code " + error.code;
+        } else {
+            errorMessage += ": " + error;
+        }
+    } else if (application.android) {
+        if (error.getErrorMessage) {
+            errorMessage += ": " + error.getErrorMessage();
+        } else if (error.getErrorCode) {
+            errorMessage += ": Code " + error.getErrorCode();
+        } else {
+            errorMessage += ": " + error;
         }
     }
     console.log(errorMessage);

@@ -1,61 +1,62 @@
 import applicationModule = require("application");
+import { IFacebookLoginHandler } from "./index.d";
 
 declare const FBSDKLoginManager: any;
 declare type FBSDKLoginManagerLoginResult = any;
 declare type NSError = any;
 
-let _isInit: boolean = false;
-let mCallbackManager;
-let loginManager;
-
-
-export function init(): boolean {
-  loginManager = FBSDKLoginManager.alloc().init();
-  if (!loginManager) {
-    return false;
+export class FacebookLoginHandler implements IFacebookLoginHandler {
+  private isInit: boolean = false;
+  private callbackManager: any;
+  private loginManager: any;
+  public init() {
+    this.loginManager = FBSDKLoginManager.alloc().init();
+    if (!this.loginManager) {
+      return false;
+    }
+    // This solve the case when user changes accounts error code 304
+    this.loginManager.logOut();
+    return this.isInit = true;
   }
-  // This solve the case when user changes accounts error code 304
-  loginManager.logOut();
-  return _isInit = true;
-}
 
-export function registerCallback(successCallback: any, cancelCallback: any, failCallback: any) {
-  if (_isInit) {
-    mCallbackManager = function(result: FBSDKLoginManagerLoginResult, error: NSError) {
-      if (error) {
-        failCallback(error);
-        return;
-      }
+  public registerCallback(successCallback: any, cancelCallback: any, failCallback: any) {
+    if (this.isInit) {
+      this.callbackManager = function(result: FBSDKLoginManagerLoginResult, error: NSError) {
+        if (error) {
+          failCallback(error);
+          return;
+        }
 
-      // something went really wrong no error and no result
-      if (!result) {
-        failCallback("Null error");
-        return;
-      }
+        // something went really wrong no error and no result
+        if (!result) {
+          failCallback("Null error");
+          return;
+        }
 
-      if (result.isCancelled) {
-        cancelCallback();
-        return;
-      }
+        if (result.isCancelled) {
+          cancelCallback();
+          return;
+        }
 
-      if (result.token) {
-        successCallback(result);
-      } else {
-        failCallback("Could not acquire an access token");
-        return;
-      }
-    };
+        if (result.token) {
+          successCallback(result);
+        } else {
+          failCallback("Could not acquire an access token");
+          return;
+        }
+      };
+    }
   }
-}
 
-export function logInWithPublishPermissions(permissions: string[]) {
-  if (_isInit) {
-    loginManager.logInWithPublishPermissionsHandler(permissions, mCallbackManager);
+  public logInWithPublishPermissions(permissions: string[]) {
+    if (this.isInit) {
+      this.loginManager.logInWithPublishPermissionsHandler(permissions, this.callbackManager);
+    }
   }
-}
 
-export function logInWithReadPermissions(permissions: string[]) {
-  if (_isInit) {
-    loginManager.logInWithReadPermissionsHandler(permissions, mCallbackManager);
+  public logInWithReadPermissions(permissions: string[]) {
+    if (this.isInit) {
+      this.loginManager.logInWithReadPermissionsHandler(permissions, this.callbackManager);
+    }
   }
 }

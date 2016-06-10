@@ -3,14 +3,6 @@ import { IFacebookLoginHandler } from "./index.d";
 
 declare const com: any;
 declare const java: any;
-// declare const android: any;
-// declare module android {
-//   // export class content {};
-//   interface Foo {
-//     content: any;
-//   }
-//   export = Foo;
-// }
 
 export class FacebookLoginHandler implements IFacebookLoginHandler {
   private isInit: boolean = false;
@@ -48,7 +40,7 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
       }
     }));
     // Overriding Activity onActivityResult method to send it to the callbackManager
-    this.activity.onActivityResult = (requestCode: number, resultCode: number, data: android.content.Intent) => {
+    this.activity.onActivityResult = (requestCode: number, resultCode: number, data: any) => {
       this.callbackManager.onActivityResult(requestCode, resultCode, data);
     };
   }
