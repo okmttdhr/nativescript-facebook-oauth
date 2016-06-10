@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">sample</string>
+    <string name="title_activity_kimera">sample</string>
+    <string name="facebook_app_id">{your-app-id}</string>
+</resources>
