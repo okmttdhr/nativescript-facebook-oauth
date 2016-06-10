@@ -1,9 +1,11 @@
+export interface IFacebookLoginHandler {
+  init: () => boolean;
+  registerCallback: (successCallback: any, cancelCallback: any, failCallback: any) => void;
+  logInWithPublishPermissions: (permissions: string[]) => void;
+  logInWithReadPermissions: (permissions: string[]) => void;
+}
+
 declare module "nativescript-facebook-login2" {
-  interface FacebookSdk {
-    init: any;
-    registerCallback: any;
-    logInWithPublishPermissions: any;
-  }
-  const facebookSdk: FacebookSdk;
-  export = facebookSdk;
+  const facebookLoginHandler: IFacebookLoginHandler;
+  export = facebookLoginHandler;
 }

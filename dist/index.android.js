@@ -1,36 +1,28 @@
 "use strict";
-var applicationModule = require("application");
-var android;
-(function (android) {
-    var content = (function () {
-        function content() {
+var application = require("application");
+var FacebookLoginHandler = (function () {
+    function FacebookLoginHandler() {
+        this.isInit = false;
+        this.activity = application.android.foregroundActivity || application.android.startActivity;
+    }
+    FacebookLoginHandler.prototype.init = function () {
+        try {
+            com.facebook.FacebookSdk.sdkInitialize(application.android.context.getApplicationContext());
+            this.callbackManager = com.facebook.CallbackManager.Factory.create();
+            this.loginManager = com.facebook.login.LoginManager.getInstance();
+            this.loginManager.logOut();
+            return this.isInit = true;
         }
-        return content;
-    }());
-    android.content = content;
-    ;
-})(android || (android = {}));
-var _isInit = false;
-var mCallbackManager;
-var loginManager;
-var _AndroidApplication = applicationModule.android;
-var _activity = _AndroidApplication.foregroundActivity || _AndroidApplication.startActivity;
-function init() {
-    try {
-        com.facebook.FacebookSdk.sdkInitialize(_AndroidApplication.context.getApplicationContext());
-        mCallbackManager = com.facebook.CallbackManager.Factory.create();
-        loginManager = com.facebook.login.LoginManager.getInstance();
-        loginManager.logOut();
-        return _isInit = true;
-    }
-    catch (e) {
-        return false;
-    }
-}
-exports.init = init;
-function registerCallback(successCallback, cancelCallback, failCallback) {
-    if (_isInit) {
-        loginManager.registerCallback(mCallbackManager, new com.facebook.FacebookCallback({
+        catch (e) {
+            return false;
+        }
+    };
+    FacebookLoginHandler.prototype.registerCallback = function (successCallback, cancelCallback, failCallback) {
+        var _this = this;
+        if (!this.isInit) {
+            return;
+        }
+        this.loginManager.registerCallback(this.callbackManager, new com.facebook.FacebookCallback({
             onSuccess: function (result) {
                 successCallback(result);
             },
@@ -41,24 +33,25 @@ function registerCallback(successCallback, cancelCallback, failCallback) {
                 failCallback(e);
             }
         }));
-        _activity.onActivityResult = function (requestCode, resultCode, data) {
-            mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        this.activity.onActivityResult = function (requestCode, resultCode, data) {
+            _this.callbackManager.onActivityResult(requestCode, resultCode, data);
         };
-    }
-}
-exports.registerCallback = registerCallback;
-function logInWithPublishPermissions(permissions) {
-    if (_isInit) {
+    };
+    FacebookLoginHandler.prototype.logInWithPublishPermissions = function (permissions) {
+        if (!this.isInit) {
+            return;
+        }
         var javaPermissions = java.util.Arrays.asList(permissions);
-        loginManager.logInWithPublishPermissions(_activity, javaPermissions);
-    }
-}
-exports.logInWithPublishPermissions = logInWithPublishPermissions;
-function logInWithReadPermissions(permissions) {
-    if (_isInit) {
+        this.loginManager.logInWithPublishPermissions(this.activity, javaPermissions);
+    };
+    FacebookLoginHandler.prototype.logInWithReadPermissions = function (permissions) {
+        if (!this.isInit) {
+            return;
+        }
         var javaPermissions = java.util.Arrays.asList(permissions);
-        loginManager.logInWithReadPermissions(_activity, javaPermissions);
-    }
-}
-exports.logInWithReadPermissions = logInWithReadPermissions;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguYW5kcm9pZC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL2luZGV4LmFuZHJvaWQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBLElBQU8saUJBQWlCLFdBQVcsYUFBYSxDQUFDLENBQUM7QUFLbEQsSUFBVSxPQUFPLENBRWhCO0FBRkQsV0FBVSxPQUFPLEVBQUMsQ0FBQztJQUNqQjtRQUFBO1FBQXNCLENBQUM7UUFBRCxjQUFDO0lBQUQsQ0FBQyxBQUF2QixJQUF1QjtJQUFWLGVBQU8sVUFBRyxDQUFBO0lBQUEsQ0FBQztBQUMxQixDQUFDLEVBRlMsT0FBTyxLQUFQLE9BQU8sUUFFaEI7QUFFRCxJQUFJLE9BQU8sR0FBWSxLQUFLLENBQUM7QUFDN0IsSUFBSSxnQkFBZ0IsQ0FBQztBQUNyQixJQUFJLFlBQVksQ0FBQztBQUVqQixJQUFNLG1CQUFtQixHQUFHLGlCQUFpQixDQUFDLE9BQU8sQ0FBQztBQUN0RCxJQUFJLFNBQVMsR0FBRyxtQkFBbUIsQ0FBQyxrQkFBa0IsSUFBSSxtQkFBbUIsQ0FBQyxhQUFhLENBQUM7QUFFNUY7SUFDSSxJQUFJLENBQUM7UUFDSCxHQUFHLENBQUMsUUFBUSxDQUFDLFdBQVcsQ0FBQyxhQUFhLENBQUMsbUJBQW1CLENBQUMsT0FBTyxDQUFDLHFCQUFxQixFQUFFLENBQUMsQ0FBQztRQUM1RixnQkFBZ0IsR0FBRyxHQUFHLENBQUMsUUFBUSxDQUFDLGVBQWUsQ0FBQyxPQUFPLENBQUMsTUFBTSxFQUFFLENBQUM7UUFDakUsWUFBWSxHQUFHLEdBQUcsQ0FBQyxRQUFRLENBQUMsS0FBSyxDQUFDLFlBQVksQ0FBQyxXQUFXLEVBQUUsQ0FBQztRQUc3RCxZQUFZLENBQUMsTUFBTSxFQUFFLENBQUM7UUFFdEIsTUFBTSxDQUFDLE9BQU8sR0FBRyxJQUFJLENBQUM7SUFDeEIsQ0FBRTtJQUFBLEtBQUssQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUM7UUFDWCxNQUFNLENBQUMsS0FBSyxDQUFDO0lBQ2YsQ0FBQztBQUNMLENBQUM7QUFiZSxZQUFJLE9BYW5CLENBQUE7QUFFRCwwQkFBaUMsZUFBb0IsRUFBRSxjQUFtQixFQUFFLFlBQWlCO0lBQzNGLEVBQUUsQ0FBQyxDQUFDLE9BQU8sQ0FBQyxDQUFDLENBQUM7UUFDWixZQUFZLENBQUMsZ0JBQWdCLENBQUMsZ0JBQWdCLEVBQUUsSUFBSSxHQUFHLENBQUMsUUFBUSxDQUFDLGdCQUFnQixDQUFDO1lBQ2hGLFNBQVMsRUFBRSxVQUFTLE1BQU07Z0JBQ3hCLGVBQWUsQ0FBQyxNQUFNLENBQUMsQ0FBQztZQUMxQixDQUFDO1lBQ0QsUUFBUSxFQUFFO2dCQUNSLGNBQWMsRUFBRSxDQUFDO1lBQ25CLENBQUM7WUFDRCxPQUFPLEVBQUUsVUFBUyxDQUFDO2dCQUNqQixZQUFZLENBQUMsQ0FBQyxDQUFDLENBQUM7WUFDbEIsQ0FBQztTQUNGLENBQUMsQ0FBQyxDQUFDO1FBR0osU0FBUyxDQUFDLGdCQUFnQixHQUFHLFVBQUMsV0FBbUIsRUFBRSxVQUFrQixFQUFFLElBQTRCO1lBQ2pHLGdCQUFnQixDQUFDLGdCQUFnQixDQUFDLFdBQVcsRUFBRSxVQUFVLEVBQUUsSUFBSSxDQUFDLENBQUM7UUFDbkUsQ0FBQyxDQUFDO0lBQ0osQ0FBQztBQUNILENBQUM7QUFuQmUsd0JBQWdCLG1CQW1CL0IsQ0FBQTtBQUVELHFDQUE0QyxXQUFxQjtJQUMvRCxFQUFFLENBQUMsQ0FBQyxPQUFPLENBQUMsQ0FBQyxDQUFDO1FBQ1osSUFBTSxlQUFlLEdBQUcsSUFBSSxDQUFDLElBQUksQ0FBQyxNQUFNLENBQUMsTUFBTSxDQUFDLFdBQVcsQ0FBQyxDQUFDO1FBQzdELFlBQVksQ0FBQywyQkFBMkIsQ0FBQyxTQUFTLEVBQUUsZUFBZSxDQUFDLENBQUM7SUFDdkUsQ0FBQztBQUNILENBQUM7QUFMZSxtQ0FBMkIsOEJBSzFDLENBQUE7QUFFRCxrQ0FBeUMsV0FBcUI7SUFDNUQsRUFBRSxDQUFDLENBQUMsT0FBTyxDQUFDLENBQUMsQ0FBQztRQUNaLElBQU0sZUFBZSxHQUFHLElBQUksQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLE1BQU0sQ0FBQyxXQUFXLENBQUMsQ0FBQztRQUM3RCxZQUFZLENBQUMsd0JBQXdCLENBQUMsU0FBUyxFQUFFLGVBQWUsQ0FBQyxDQUFDO0lBQ3BFLENBQUM7QUFDSCxDQUFDO0FBTGUsZ0NBQXdCLDJCQUt2QyxDQUFBIn0=
+        this.loginManager.logInWithReadPermissions(this.activity, javaPermissions);
+    };
+    return FacebookLoginHandler;
+}());
+exports.FacebookLoginHandler = FacebookLoginHandler;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguYW5kcm9pZC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL2luZGV4LmFuZHJvaWQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUFBLElBQU8sV0FBVyxXQUFXLGFBQWEsQ0FBQyxDQUFDO0FBYzVDO0lBQUE7UUFDVSxXQUFNLEdBQVksS0FBSyxDQUFDO1FBR3hCLGFBQVEsR0FBUSxXQUFXLENBQUMsT0FBTyxDQUFDLGtCQUFrQixJQUFJLFdBQVcsQ0FBQyxPQUFPLENBQUMsYUFBYSxDQUFDO0lBb0R0RyxDQUFDO0lBbkRRLG1DQUFJLEdBQVg7UUFDRSxJQUFJLENBQUM7WUFDSCxHQUFHLENBQUMsUUFBUSxDQUFDLFdBQVcsQ0FBQyxhQUFhLENBQUMsV0FBVyxDQUFDLE9BQU8sQ0FBQyxPQUFPLENBQUMscUJBQXFCLEVBQUUsQ0FBQyxDQUFDO1lBQzVGLElBQUksQ0FBQyxlQUFlLEdBQUcsR0FBRyxDQUFDLFFBQVEsQ0FBQyxlQUFlLENBQUMsT0FBTyxDQUFDLE1BQU0sRUFBRSxDQUFDO1lBQ3JFLElBQUksQ0FBQyxZQUFZLEdBQUcsR0FBRyxDQUFDLFFBQVEsQ0FBQyxLQUFLLENBQUMsWUFBWSxDQUFDLFdBQVcsRUFBRSxDQUFDO1lBR2xFLElBQUksQ0FBQyxZQUFZLENBQUMsTUFBTSxFQUFFLENBQUM7WUFFM0IsTUFBTSxDQUFDLElBQUksQ0FBQyxNQUFNLEdBQUcsSUFBSSxDQUFDO1FBQzVCLENBQUU7UUFBQSxLQUFLLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDO1lBQ1gsTUFBTSxDQUFDLEtBQUssQ0FBQztRQUNmLENBQUM7SUFDSCxDQUFDO0lBRU0sK0NBQWdCLEdBQXZCLFVBQXdCLGVBQW9CLEVBQUUsY0FBbUIsRUFBRSxZQUFpQjtRQUFwRixpQkFtQkM7UUFsQkMsRUFBRSxDQUFDLENBQUMsQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLENBQUMsQ0FBQztZQUNqQixNQUFNLENBQUM7UUFDVCxDQUFDO1FBQ0QsSUFBSSxDQUFDLFlBQVksQ0FBQyxnQkFBZ0IsQ0FBQyxJQUFJLENBQUMsZUFBZSxFQUFFLElBQUksR0FBRyxDQUFDLFFBQVEsQ0FBQyxnQkFBZ0IsQ0FBQztZQUN6RixTQUFTLEVBQUUsVUFBUyxNQUFNO2dCQUN4QixlQUFlLENBQUMsTUFBTSxDQUFDLENBQUM7WUFDMUIsQ0FBQztZQUNELFFBQVEsRUFBRTtnQkFDUixjQUFjLEVBQUUsQ0FBQztZQUNuQixDQUFDO1lBQ0QsT0FBTyxFQUFFLFVBQVMsQ0FBQztnQkFDakIsWUFBWSxDQUFDLENBQUMsQ0FBQyxDQUFDO1lBQ2xCLENBQUM7U0FDRixDQUFDLENBQUMsQ0FBQztRQUVKLElBQUksQ0FBQyxRQUFRLENBQUMsZ0JBQWdCLEdBQUcsVUFBQyxXQUFtQixFQUFFLFVBQWtCLEVBQUUsSUFBNEI7WUFDckcsS0FBSSxDQUFDLGVBQWUsQ0FBQyxnQkFBZ0IsQ0FBQyxXQUFXLEVBQUUsVUFBVSxFQUFFLElBQUksQ0FBQyxDQUFDO1FBQ3ZFLENBQUMsQ0FBQztJQUNKLENBQUM7SUFFTSwwREFBMkIsR0FBbEMsVUFBbUMsV0FBcUI7UUFDdEQsRUFBRSxDQUFDLENBQUMsQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLENBQUMsQ0FBQztZQUNqQixNQUFNLENBQUM7UUFDVCxDQUFDO1FBQ0QsSUFBTSxlQUFlLEdBQUcsSUFBSSxDQUFDLElBQUksQ0FBQyxNQUFNLENBQUMsTUFBTSxDQUFDLFdBQVcsQ0FBQyxDQUFDO1FBQzdELElBQUksQ0FBQyxZQUFZLENBQUMsMkJBQTJCLENBQUMsSUFBSSxDQUFDLFFBQVEsRUFBRSxlQUFlLENBQUMsQ0FBQztJQUNoRixDQUFDO0lBRU0sdURBQXdCLEdBQS9CLFVBQWdDLFdBQXFCO1FBQ25ELEVBQUUsQ0FBQyxDQUFDLENBQUMsSUFBSSxDQUFDLE1BQU0sQ0FBQyxDQUFDLENBQUM7WUFDakIsTUFBTSxDQUFDO1FBQ1QsQ0FBQztRQUNELElBQU0sZUFBZSxHQUFHLElBQUksQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLE1BQU0sQ0FBQyxXQUFXLENBQUMsQ0FBQztRQUM3RCxJQUFJLENBQUMsWUFBWSxDQUFDLHdCQUF3QixDQUFDLElBQUksQ0FBQyxRQUFRLEVBQUUsZUFBZSxDQUFDLENBQUM7SUFDN0UsQ0FBQztJQUNILDJCQUFDO0FBQUQsQ0FBQyxBQXhERCxJQXdEQztBQXhEWSw0QkFBb0IsdUJBd0RoQyxDQUFBIn0=

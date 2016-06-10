@@ -1,34 +1,42 @@
-import applicationModule = require("application");
+import application = require("application");
+import { IFacebookLoginHandler } from "./index.d";
 
 declare const com: any;
 declare const java: any;
-declare const android: any;
+// declare const android: any;
+// declare module android {
+//   // export class content {};
+//   interface Foo {
+//     content: any;
+//   }
+//   export = Foo;
+// }
 
-let _isInit: boolean = false;
-let mCallbackManager;
-let loginManager;
-
-const _AndroidApplication = applicationModule.android;
-let _activity = _AndroidApplication.foregroundActivity || _AndroidApplication.startActivity;
-
-export function init(): boolean {
+export class FacebookLoginHandler implements IFacebookLoginHandler {
+  private isInit: boolean = false;
+  private callbackManager: any;
+  private loginManager: any;
+  private activity: any = application.android.foregroundActivity || application.android.startActivity;
+  public init() {
     try {
-      com.facebook.FacebookSdk.sdkInitialize(_AndroidApplication.context.getApplicationContext());
-      mCallbackManager = com.facebook.CallbackManager.Factory.create();
-      loginManager = com.facebook.login.LoginManager.getInstance();
+      com.facebook.FacebookSdk.sdkInitialize(application.android.context.getApplicationContext());
+      this.callbackManager = com.facebook.CallbackManager.Factory.create();
+      this.loginManager = com.facebook.login.LoginManager.getInstance();
 
       // This solve the case when user changes accounts error code 304
-      loginManager.logOut();
+      this.loginManager.logOut();
 
-      return _isInit = true;
+      return this.isInit = true;
     } catch (e) {
       return false;
     }
-}
+  }
 
-export function registerCallback(successCallback: any, cancelCallback: any, failCallback: any) {
-  if (_isInit) {
-    loginManager.registerCallback(mCallbackManager, new com.facebook.FacebookCallback({
+  public registerCallback(successCallback: any, cancelCallback: any, failCallback: any) {
+    if (!this.isInit) {
+      return;
+    }
+    this.loginManager.registerCallback(this.callbackManager, new com.facebook.FacebookCallback({
       onSuccess: function(result) {
         successCallback(result);
       },
@@ -39,24 +47,25 @@ export function registerCallback(successCallback: any, cancelCallback: any, fail
         failCallback(e);
       }
     }));
-
     // Overriding Activity onActivityResult method to send it to the callbackManager
-    _activity.onActivityResult = (requestCode: number, resultCode: number, data: android.content.Intent) => {
-      mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    this.activity.onActivityResult = (requestCode: number, resultCode: number, data: android.content.Intent) => {
+      this.callbackManager.onActivityResult(requestCode, resultCode, data);
     };
   }
-}
 
-export function logInWithPublishPermissions(permissions: string[]) {
-  if (_isInit) {
+  public logInWithPublishPermissions(permissions: string[]) {
+    if (!this.isInit) {
+      return;
+    }
     const javaPermissions = java.util.Arrays.asList(permissions);
-    loginManager.logInWithPublishPermissions(_activity, javaPermissions);
+    this.loginManager.logInWithPublishPermissions(this.activity, javaPermissions);
   }
-}
 
-export function logInWithReadPermissions(permissions: string[]) {
-  if (_isInit) {
+  public logInWithReadPermissions(permissions: string[]) {
+    if (!this.isInit) {
+      return;
+    }
     const javaPermissions = java.util.Arrays.asList(permissions);
-    loginManager.logInWithReadPermissions(_activity, javaPermissions);
+    this.loginManager.logInWithReadPermissions(this.activity, javaPermissions);
   }
 }
