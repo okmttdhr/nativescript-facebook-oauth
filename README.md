@@ -103,25 +103,25 @@ const cancelCallback = function() {
 };
 
 const failCallback = function(error) {
-    let errorMessage = "Error with Facebook";
+    let errorMessage = "Error with: ";
     if (!error) {
       return;
     }
     if (application.ios) {
         if (error.localizedDescription) {
-            errorMessage += ": " + error.localizedDescription;
+            errorMessage += error.localizedDescription;
         } else if (error.code) {
-            errorMessage += ": Code " + error.code;
+            errorMessage += error.code;
         } else {
-            errorMessage += ": " + error;
+            errorMessage += error;
         }
     } else if (application.android) {
         if (error.getErrorMessage) {
-            errorMessage += ": " + error.getErrorMessage();
+            errorMessage += error.getErrorMessage();
         } else if (error.getErrorCode) {
-            errorMessage += ": Code " + error.getErrorCode();
+            errorMessage += error.getErrorCode();
         } else {
-            errorMessage += ": " + error;
+            errorMessage += error;
         }
     }
     console.log(errorMessage);
@@ -130,11 +130,13 @@ const failCallback = function(error) {
 
 ログインの処理
 
+[Permissions](https://developers.facebook.com/docs/facebook-login/permissions)
+
 ```js
 const facebookLoginHandler = new FacebookLoginHandler();
 facebookLoginHandler.init();
 facebookLoginHandler.registerCallback(successCallback, cancelCallback, failCallback);
-facebookLoginHandler.logInWithPublishPermissions(["publish_actions"]);
+facebookLoginHandler.logInWithPublishPermissions(["publish_actions", "email"]);
 ```
 
 

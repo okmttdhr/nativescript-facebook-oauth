@@ -35,22 +35,14 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
       onCancel: function() {
         cancelCallback();
       },
-      onError: function(e) {
-        failCallback(e);
+      onError: function(error) {
+        failCallback(error);
       }
     }));
-    // Overriding Activity onActivityResult method to send it to the callbackManager
+    // Overriding activity.onActivityResult method to send it to the callbackManager
     this.activity.onActivityResult = (requestCode: number, resultCode: number, data: any) => {
       this.callbackManager.onActivityResult(requestCode, resultCode, data);
     };
-  }
-
-  public logInWithPublishPermissions(permissions: string[]) {
-    if (!this.isInit) {
-      return;
-    }
-    const javaPermissions = java.util.Arrays.asList(permissions);
-    this.loginManager.logInWithPublishPermissions(this.activity, javaPermissions);
   }
 
   public logInWithReadPermissions(permissions: string[]) {
@@ -59,5 +51,13 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     }
     const javaPermissions = java.util.Arrays.asList(permissions);
     this.loginManager.logInWithReadPermissions(this.activity, javaPermissions);
+  }
+
+  public logInWithPublishPermissions(permissions: string[]) {
+    if (!this.isInit) {
+      return;
+    }
+    const javaPermissions = java.util.Arrays.asList(permissions);
+    this.loginManager.logInWithPublishPermissions(this.activity, javaPermissions);
   }
 }
