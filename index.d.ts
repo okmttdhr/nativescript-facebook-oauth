@@ -12,10 +12,6 @@ interface IFBDelegate {
 }
 
 declare module "nativescript-facebook-login2" {
-  const FacebookLoginHandler: IFacebookLoginHandler;
-  const FBDelegate: IFBDelegate;
-  export = {
-    FacebookLoginHandler,
-    FBDelegate
-  };
+  export const FacebookLoginHandler: IFacebookLoginHandler;
+  export const FBDelegate: IFBDelegate;
 }
