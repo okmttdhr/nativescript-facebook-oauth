@@ -5,6 +5,10 @@ export interface IFacebookLoginHandler {
   logInWithReadPermissions: (permissions: string[]) => void;
 }
 
+export interface FacebookLoginResult {
+  token: string;
+}
+
 export interface FacebookLoginError {
   message: string;
   code: number;

@@ -1,5 +1,5 @@
 import application = require("application");
-import { IFacebookLoginHandler, FacebookLoginError } from "./index.d";
+import { IFacebookLoginHandler, FacebookLoginResult, FacebookLoginError } from "./index.d";
 
 declare const com: any;
 declare const java: any;
@@ -30,14 +30,15 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     }
     this.loginManager.registerCallback(this.callbackManager, new com.facebook.FacebookCallback({
       onSuccess: function(result: AccountKitLoginResult) {
-        successCallback(result.getAccessToken().getToken());
+        const facebookLoginResult: FacebookLoginResult = { token: result.getAccessToken().getToken() };
+        successCallback(facebookLoginResult);
       },
       onCancel: function() {
         cancelCallback();
       },
       onError: function(error: AccountKitRequestError) {
-        const e: FacebookLoginError = { message: error.getErrorMessage(), code: error.getErrorCode(), row: error };
-        failCallback(e);
+        const facebookLoginError: FacebookLoginError = { message: error.getErrorMessage(), code: error.getErrorCode(), row: error };
+        failCallback(facebookLoginError);
       }
     }));
     this.activity.onActivityResult = (requestCode: number, resultCode: number, data: any) => {

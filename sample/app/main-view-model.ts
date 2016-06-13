@@ -7,8 +7,8 @@ export class HelloWorldModel extends observable.Observable {
         super();
     }
 
-    successCallback(token) {
-        console.log(token);
+    successCallback(result) {
+        console.log(result.token);
     };
 
     cancelCallback() {

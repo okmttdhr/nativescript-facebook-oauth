@@ -1,5 +1,5 @@
 import applicationModule = require("application");
-import { IFacebookLoginHandler, FacebookLoginError } from "./index.d";
+import { IFacebookLoginHandler, FacebookLoginResult, FacebookLoginError } from "./index.d";
 
 declare const FBSDKAppEvents: any;
 declare const FBSDKApplicationDelegate: any;
@@ -45,15 +45,16 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     }
     this.callbackManager = function(result: FBSDKLoginManagerLoginResult, error: NSError) {
       if (error) {
-        const e: FacebookLoginError = { message: error.localizedDescription, code: error.code, row: error };
-        failCallback(e);
+        const facebookLoginError: FacebookLoginError = { message: error.localizedDescription, code: error.code, row: error };
+        failCallback(facebookLoginError);
         return;
       }
       if (result.isCancelled) {
         cancelCallback();
         return;
       }
-      successCallback(result.token.tokenString);
+      const facebookLoginResult: FacebookLoginResult = { token: result.token.tokenString };
+      successCallback(facebookLoginResult);
     };
   }
 
