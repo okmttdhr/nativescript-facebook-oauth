@@ -1,8 +1,10 @@
 import application = require("application");
-import { IFacebookLoginHandler } from "./index.d";
+import { IFacebookLoginHandler, FacebookLoginError } from "./index.d";
 
 declare const com: any;
 declare const java: any;
+declare type AccountKitLoginResult = any
+declare type AccountKitRequestError = any
 
 export class FacebookLoginHandler implements IFacebookLoginHandler {
   private isInit: boolean = false;
@@ -14,8 +16,6 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
       com.facebook.FacebookSdk.sdkInitialize(application.android.context.getApplicationContext());
       this.callbackManager = com.facebook.CallbackManager.Factory.create();
       this.loginManager = com.facebook.login.LoginManager.getInstance();
-
-      // This solve the case when user changes accounts error code 304
       this.loginManager.logOut();
 
       return this.isInit = true;
@@ -29,17 +29,17 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
       return;
     }
     this.loginManager.registerCallback(this.callbackManager, new com.facebook.FacebookCallback({
-      onSuccess: function(result) {
-        successCallback(result);
+      onSuccess: function(result: AccountKitLoginResult) {
+        successCallback(result.getAccessToken().getToken());
       },
       onCancel: function() {
         cancelCallback();
       },
-      onError: function(error) {
-        failCallback(error);
+      onError: function(error: AccountKitRequestError) {
+        const e: FacebookLoginError = { message: error.getErrorMessage(), code: error.getErrorCode(), row: error };
+        failCallback(e);
       }
     }));
-    // Overriding activity.onActivityResult method to send it to the callbackManager
     this.activity.onActivityResult = (requestCode: number, resultCode: number, data: any) => {
       this.callbackManager.onActivityResult(requestCode, resultCode, data);
     };

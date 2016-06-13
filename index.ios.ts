@@ -1,5 +1,5 @@
 import applicationModule = require("application");
-import { IFacebookLoginHandler } from "./index.d";
+import { IFacebookLoginHandler, FacebookLoginError } from "./index.d";
 
 declare const FBSDKAppEvents: any;
 declare const FBSDKApplicationDelegate: any;
@@ -35,7 +35,6 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     if (!this.loginManager) {
       return false;
     }
-    // This solve the case when user changes accounts error code 304
     this.loginManager.logOut();
     return this.isInit = true;
   }
@@ -45,17 +44,16 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
       return;
     }
     this.callbackManager = function(result: FBSDKLoginManagerLoginResult, error: NSError) {
-      if (error || !result || !result.token) {
-        failCallback(error);
+      if (error) {
+        const e: FacebookLoginError = { message: error.localizedDescription, code: error.code, row: error };
+        failCallback(e);
         return;
       }
-
       if (result.isCancelled) {
         cancelCallback();
         return;
       }
-
-      successCallback(result);
+      successCallback(result.token.tokenString);
     };
   }
 

@@ -5,6 +5,12 @@ export interface IFacebookLoginHandler {
   logInWithReadPermissions: (permissions: string[]) => void;
 }
 
+export interface FacebookLoginError {
+  message: string;
+  code: number;
+  row: any;
+}
+
 interface IFBDelegate {
   applicationDidFinishLaunchingWithOptions: () => boolean;
   applicationOpenURLSourceApplicationAnnotation: () => void;

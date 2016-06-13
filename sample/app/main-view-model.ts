@@ -7,13 +7,7 @@ export class HelloWorldModel extends observable.Observable {
         super();
     }
 
-    successCallback(result) {
-        let token;
-        if (application.android) {
-            token = result.getAccessToken().getToken();
-        } else if (application.ios) {
-            token = result.token.tokenString;
-        }
+    successCallback(token) {
         console.log(token);
     };
 
@@ -22,28 +16,7 @@ export class HelloWorldModel extends observable.Observable {
     };
 
     failCallback(error) {
-        let errorMessage = "Error with: ";
-        if (!error) {
-          return;
-        }
-        if (application.ios) {
-            if (error.localizedDescription) {
-                errorMessage += error.localizedDescription;
-            } else if (error.code) {
-                errorMessage += error.code;
-            } else {
-                errorMessage += error;
-            }
-        } else if (application.android) {
-            if (error.getErrorMessage) {
-                errorMessage += error.getErrorMessage();
-            } else if (error.getErrorCode) {
-                errorMessage += error.getErrorCode();
-            } else {
-                errorMessage += error;
-            }
-        }
-        console.log(errorMessage);
+        console.log(error);
     };
 
     public login() {
