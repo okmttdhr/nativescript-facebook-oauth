@@ -5,7 +5,17 @@ export interface IFacebookLoginHandler {
   logInWithReadPermissions: (permissions: string[]) => void;
 }
 
+interface IMyDelegate {
+  applicationDidFinishLaunchingWithOptions: () => boolean;
+  applicationOpenURLSourceApplicationAnnotation: () => void;
+  applicationDidBecomeActive: () => void;
+}
+
 declare module "nativescript-facebook-login2" {
-  const facebookLoginHandler: IFacebookLoginHandler;
-  export = facebookLoginHandler;
+  const FacebookLoginHandler: IFacebookLoginHandler;
+  const MyDelegate: IMyDelegate;
+  export = {
+    FacebookLoginHandler,
+    MyDelegate
+  };
 }
