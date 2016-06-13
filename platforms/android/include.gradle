@@ -1,7 +1,7 @@
 android {
   productFlavors {
-    "nativescript-facebook-login2" {
-      dimension "nativescript-facebook-login2"
+    "nativescript-facebook-oauth" {
+      dimension "nativescript-facebook-oauth"
     }
   }
 }

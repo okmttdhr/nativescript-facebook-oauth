@@ -1,5 +1,5 @@
 {
-	"name": "nativescript-facebook-login2",
+	"name": "nativescript-facebook-oauth",
 	"version": "0.0.1",
 	"description": "",
 	"main": "dist/index.js",

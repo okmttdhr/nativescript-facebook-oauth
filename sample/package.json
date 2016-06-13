@@ -13,7 +13,7 @@
     }
   },
   "dependencies": {
-    "nativescript-facebook-login2": "file:..",
+    "nativescript-facebook-oauth": "file:..",
     "tns-core-modules": "2.0.1"
   },
   "devDependencies": {

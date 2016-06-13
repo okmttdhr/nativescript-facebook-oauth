@@ -1,4 +1,4 @@
-# nativescript-facebook-login2
+# nativescript-facebook-oauth
 
 Facebook SDKを使用して、iOS、Android共にOAuth認証を実現するNativeScriptプラグインです。
 
@@ -7,7 +7,7 @@ Facebook SDKを使用して、iOS、Android共にOAuth認証を実現するNativ
 ### インストール
 
 ```bash
-npm install nativescript-facebook-login2
+npm install nativescript-facebook-oauth
 ```
 
 ### Android
@@ -72,7 +72,7 @@ npm install nativescript-facebook-login2
 下記のコードを追加し、Objective-Cの`AppDelegate`クラスを`FBSDKApplicationDelegate`にひも付けてください。
 
 ```js
-const FBDelegate = require("nativescript-facebook-login2").FBDelegate;
+const FBDelegate = require("nativescript-facebook-oauth").FBDelegate;
 if (application.ios) {
   application.ios.delegate = FBDelegate;
 }
@@ -82,7 +82,7 @@ application.start({ moduleName: "main-page" });
 ### Android/iOS共通
 
 ```js
-const FacebookLoginHandler = require("nativescript-facebook-login2").FacebookLoginHandler;
+const FacebookLoginHandler = require("nativescript-facebook-oauth").FacebookLoginHandler;
 
 // コールバックの処理
 const successCallback = function(result) {

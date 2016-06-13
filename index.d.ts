@@ -11,7 +11,7 @@ interface IFBDelegate {
   applicationDidBecomeActive: () => void;
 }
 
-declare module "nativescript-facebook-login2" {
+declare module "nativescript-facebook-oauth" {
   export const FacebookLoginHandler: IFacebookLoginHandler;
   export const FBDelegate: IFBDelegate;
 }

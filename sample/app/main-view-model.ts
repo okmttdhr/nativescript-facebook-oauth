@@ -1,7 +1,6 @@
 import application = require("application");
 import observable = require("data/observable");
-const FacebookLoginHandler = require("nativescript-facebook-login2").FacebookLoginHandler;
-// import { FacebookLoginHandler } from "nativescript-facebook-login2";
+const FacebookLoginHandler = require("nativescript-facebook-oauth").FacebookLoginHandler;
 
 export class HelloWorldModel extends observable.Observable {
     constructor() {
