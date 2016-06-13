@@ -4,6 +4,8 @@ Facebook SDKを使用して、iOS、Android共にOAuth認証を実現するNativ
 
 ## 使い方
 
+### インストール
+
 ```bash
 npm install nativescript-facebook-login2
 ```
@@ -21,7 +23,7 @@ npm install nativescript-facebook-login2
 </resources>
 ```
 
-`your_app/App_Resources/Android/AndroidManifest.xml`に`uses-permission` `meta-data` `activity`を追加してください。
+`your_app/App_Resources/Android/AndroidManifest.xml`に下記の`uses-permission` `meta-data` `activity`を追加してください。
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -67,27 +69,22 @@ npm install nativescript-facebook-login2
 </array>
 ```
 
-Delegateの処理を追加してください。
+下記のコードを追加し、Objective-Cの`AppDelegate`クラスを`FBSDKApplicationDelegate`にひも付けてください。
 
 ```js
-const MyDelegate = require("nativescript-facebook-login2").MyDelegate;
+const FBDelegate = require("nativescript-facebook-login2").FBDelegate;
 if (application.ios) {
-  application.ios.delegate = MyDelegate;
+  application.ios.delegate = FBDelegate;
 }
 application.start({ moduleName: "main-page" });
 ```
 
 ### Android/iOS共通
 
-読み込み。
-
 ```js
 const FacebookLoginHandler = require("nativescript-facebook-login2").FacebookLoginHandler;
-```
 
-コールバックの処理。
-
-```js
+// コールバックの処理
 const successCallback = function(result) {
     let token;
     if (application.android) {
@@ -126,17 +123,14 @@ const failCallback = function(error) {
     }
     console.log(errorMessage);
 };
-```
 
-ログインの処理
-
-[Permissions](https://developers.facebook.com/docs/facebook-login/permissions)
-
-```js
+// ログインの処理
 const facebookLoginHandler = new FacebookLoginHandler();
 facebookLoginHandler.init();
 facebookLoginHandler.registerCallback(successCallback, cancelCallback, failCallback);
-facebookLoginHandler.logInWithPublishPermissions(["publish_actions", "email"]);
+
+// Permissionsを追加 https://developers.facebook.com/docs/facebook-login/permissions
+facebookLoginHandler.logInWithReadPermissions(["email"]);
 ```
 
 

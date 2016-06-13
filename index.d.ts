@@ -5,7 +5,7 @@ export interface IFacebookLoginHandler {
   logInWithReadPermissions: (permissions: string[]) => void;
 }
 
-interface IMyDelegate {
+interface IFBDelegate {
   applicationDidFinishLaunchingWithOptions: () => boolean;
   applicationOpenURLSourceApplicationAnnotation: () => void;
   applicationDidBecomeActive: () => void;
@@ -13,9 +13,9 @@ interface IMyDelegate {
 
 declare module "nativescript-facebook-login2" {
   const FacebookLoginHandler: IFacebookLoginHandler;
-  const MyDelegate: IMyDelegate;
+  const FBDelegate: IFBDelegate;
   export = {
     FacebookLoginHandler,
-    MyDelegate
+    FBDelegate
   };
 }

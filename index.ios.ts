@@ -12,7 +12,7 @@ export declare class UIApplicationDelegate { any; };
 export declare type UIApplication = any;
 export declare type NSDictionary = any;
 
-export class MyDelegate extends UIResponder implements UIApplicationDelegate {
+export class FBDelegate extends UIResponder implements UIApplicationDelegate {
   public static ObjCProtocols = [UIApplicationDelegate];
 
   applicationDidFinishLaunchingWithOptions(application: UIApplication, launchOptions: NSDictionary): boolean {

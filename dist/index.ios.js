@@ -6,24 +6,24 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 ;
 ;
-var MyDelegate = (function (_super) {
-    __extends(MyDelegate, _super);
-    function MyDelegate() {
+var FBDelegate = (function (_super) {
+    __extends(FBDelegate, _super);
+    function FBDelegate() {
         _super.apply(this, arguments);
     }
-    MyDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) {
+    FBDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) {
         return FBSDKApplicationDelegate.sharedInstance().applicationDidFinishLaunchingWithOptions(application, launchOptions);
     };
-    MyDelegate.prototype.applicationOpenURLSourceApplicationAnnotation = function (application, url, sourceApplication, annotation) {
+    FBDelegate.prototype.applicationOpenURLSourceApplicationAnnotation = function (application, url, sourceApplication, annotation) {
         return FBSDKApplicationDelegate.sharedInstance().applicationOpenURLSourceApplicationAnnotation(application, url, sourceApplication, annotation);
     };
-    MyDelegate.prototype.applicationDidBecomeActive = function (application) {
+    FBDelegate.prototype.applicationDidBecomeActive = function (application) {
         FBSDKAppEvents.activateApp();
     };
-    MyDelegate.ObjCProtocols = [UIApplicationDelegate];
-    return MyDelegate;
+    FBDelegate.ObjCProtocols = [UIApplicationDelegate];
+    return FBDelegate;
 }(UIResponder));
-exports.MyDelegate = MyDelegate;
+exports.FBDelegate = FBDelegate;
 var FacebookLoginHandler = (function () {
     function FacebookLoginHandler() {
         this.isInit = false;

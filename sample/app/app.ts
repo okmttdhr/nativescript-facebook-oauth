@@ -1,8 +1,8 @@
 ﻿import application = require("application");
-const MyDelegate = require("nativescript-facebook-login2").MyDelegate;
+const FBDelegate = require("nativescript-facebook-login2").FBDelegate;
 
 if (application.ios) {
-  application.ios.delegate = MyDelegate;
+  application.ios.delegate = FBDelegate;
 }
 
 application.start({ moduleName: "main-page" });
