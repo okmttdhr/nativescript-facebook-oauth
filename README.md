@@ -1,6 +1,142 @@
 # nativescript-facebook-login2
 
-Facebook SDKを使用して、NativeScriptでiOS、Android共にOAuth認証を実現するプラグインです。
+Facebook SDKを使用して、iOS、Android共にOAuth認証を実現するNativeScriptプラグインです。
+
+## 使い方
+
+```bash
+npm install nativescript-facebook-login2
+```
+
+### Android
+
+`your_app/App_Resources/Android/values/strings.xml`を作成し下記のコードを入力してください。
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">sample</string>
+    <string name="title_activity_kimera">sample</string>
+    <string name="facebook_app_id">{your-app-id}</string>
+</resources>
+```
+
+`your_app/App_Resources/Android/AndroidManifest.xml`に`uses-permission` `meta-data` `activity`を追加してください。
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+	<uses-permission android:name="android.permission.INTERNET"/>
+    ...
+	<application>
+        ...
+		<meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+		<activity android:name="com.facebook.FacebookActivity"
+		          android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+		          android:theme="@android:style/Theme.Translucent.NoTitleBar"
+		          android:label="@string/app_name"/>
+        ...
+	</application>
+</manifest>
+```
+
+### iOS
+
+`your_app/App_Resources/iOS/Info.plist`の最下部にある`</dict>`の前に下記のコードを追加してください。
+
+```xml
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>fb{your-app-id}</string>
+    </array>
+  </dict>
+</array>
+<key>FacebookAppID</key>
+<string>{your-app-id}</string>
+<key>FacebookDisplayName</key>
+<string>{your-app-name}</string>
+<key>LSApplicationQueriesSchemes</key>
+<array>
+  <string>fbapi</string>
+  <string>fb-messenger-api</string>
+  <string>fbauth2</string>
+  <string>fbshareextension</string>
+</array>
+```
+
+Delegateの処理を追加してください。
+
+```js
+const MyDelegate = require("nativescript-facebook-login2").MyDelegate;
+if (application.ios) {
+  application.ios.delegate = MyDelegate;
+}
+application.start({ moduleName: "main-page" });
+```
+
+### Android/iOS共通
+
+読み込み。
+
+```js
+const FacebookLoginHandler = require("nativescript-facebook-login2").FacebookLoginHandler;
+```
+
+コールバックの処理。
+
+```js
+const successCallback = function(result) {
+    let token;
+    if (application.android) {
+        token = result.getAccessToken().getToken();
+    } else if (application.ios) {
+        token = result.token.tokenString;
+    }
+    console.log(token);
+};
+
+const cancelCallback = function() {
+    console.log("Login was cancelled");
+};
+
+const failCallback = function(error) {
+    let errorMessage = "Error with Facebook";
+    if (!error) {
+      return;
+    }
+    if (application.ios) {
+        if (error.localizedDescription) {
+            errorMessage += ": " + error.localizedDescription;
+        } else if (error.code) {
+            errorMessage += ": Code " + error.code;
+        } else {
+            errorMessage += ": " + error;
+        }
+    } else if (application.android) {
+        if (error.getErrorMessage) {
+            errorMessage += ": " + error.getErrorMessage();
+        } else if (error.getErrorCode) {
+            errorMessage += ": Code " + error.getErrorCode();
+        } else {
+            errorMessage += ": " + error;
+        }
+    }
+    console.log(errorMessage);
+};
+```
+
+ログインの処理
+
+```js
+const facebookLoginHandler = new FacebookLoginHandler();
+facebookLoginHandler.init();
+facebookLoginHandler.registerCallback(successCallback, cancelCallback, failCallback);
+facebookLoginHandler.logInWithPublishPermissions(["publish_actions"]);
+```
+
 
 ## 検証の手順
 
