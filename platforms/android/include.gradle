@@ -1,7 +1,7 @@
 android {
   productFlavors {
-    "nativescript-facebook-login-test" {
-      dimension "nativescript-facebook-login-test"
+    "nativescript-facebook-login2" {
+      dimension "nativescript-facebook-login2"
     }
   }
 }
@@ -11,5 +11,5 @@ repositories {
 }
 
 dependencies {
-  compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+  compile 'com.facebook.android:facebook-android-sdk:4.11.0'
 }
