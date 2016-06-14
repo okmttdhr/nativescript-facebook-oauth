@@ -36,7 +36,7 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
         cancelCallback();
       },
       onError: function(error: AccountKitRequestError) {
-        const facebookLoginError: FacebookLoginError = { message: error.getErrorMessage(), code: error.getErrorCode(), row: error };
+        const facebookLoginError: FacebookLoginError = { message: error.getErrorMessage(), code: error.getErrorCode(), raw: error };
         failCallback(facebookLoginError);
       }
     }));

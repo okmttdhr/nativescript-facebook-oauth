@@ -1,10 +1,29 @@
-import applicationModule = require("application");
+import application = require("application");
 import { IFacebookLoginHandler, FacebookLoginResult, FacebookLoginError } from "./index.d";
 
-declare const FBSDKAppEvents: any;
-declare const FBSDKApplicationDelegate: any;
-declare const FBSDKLoginManager: any;
-declare type FBSDKLoginManagerLoginResult = any;
+declare const FBSDKApplicationDelegate: {
+  sharedInstance: () => {
+    applicationDidFinishLaunchingWithOptions: (application: UIApplication, launchOptions: NSDictionary) => boolean;
+    applicationOpenURLSourceApplicationAnnotation: (application: UIApplication, url: NSURL, sourceApplication: string, annotation: any) => boolean;
+  };
+};
+declare const FBSDKAppEvents: {
+  activateApp: () => void;
+};
+
+interface FBSDKAccessToken {
+  tokenString: NSString;
+}
+interface FBSDKLoginManagerLoginResult {
+  isCancelled: boolean;
+  token: FBSDKAccessToken;
+};
+type FBSDKLoginManagerRequestTokenHandler = (result: FBSDKLoginManagerLoginResult, error: NSError) => void;
+declare class FBSDKLoginManager {
+  logOut: () => void;
+  logInWithReadPermissionsHandler: (permissions: NSArray, callback: FBSDKLoginManagerRequestTokenHandler) => void;
+  logInWithPublishPermissionsHandler: (permissions: NSArray, callback: FBSDKLoginManagerRequestTokenHandler) => void;
+};
 
 export class FBDelegate extends UIResponder implements UIApplicationDelegate {
   public static ObjCProtocols = [UIApplicationDelegate];
@@ -12,7 +31,7 @@ export class FBDelegate extends UIResponder implements UIApplicationDelegate {
   applicationDidFinishLaunchingWithOptions(application: UIApplication, launchOptions: NSDictionary): boolean {
     return FBSDKApplicationDelegate.sharedInstance().applicationDidFinishLaunchingWithOptions(application, launchOptions);
   }
-  applicationOpenURLSourceApplicationAnnotation(application, url, sourceApplication, annotation) {
+  applicationOpenURLSourceApplicationAnnotation(application: UIApplication, url: NSURL, sourceApplication: string, annotation: any): boolean {
     return FBSDKApplicationDelegate.sharedInstance().applicationOpenURLSourceApplicationAnnotation(application, url, sourceApplication, annotation);
   }
   applicationDidBecomeActive(application: UIApplication): void {
@@ -22,10 +41,10 @@ export class FBDelegate extends UIResponder implements UIApplicationDelegate {
 
 export class FacebookLoginHandler implements IFacebookLoginHandler {
   private isInit: boolean = false;
-  private callbackManager: any;
-  private loginManager: any;
+  private callbackManager: FBSDKLoginManagerRequestTokenHandler;
+  private loginManager: FBSDKLoginManager;
   public init() {
-    this.loginManager = FBSDKLoginManager.alloc().init();
+    this.loginManager = new FBSDKLoginManager();
     if (!this.loginManager) {
       return false;
     }
@@ -39,7 +58,7 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     }
     this.callbackManager = function(result: FBSDKLoginManagerLoginResult, error: NSError) {
       if (error) {
-        const facebookLoginError: FacebookLoginError = { message: error.localizedDescription, code: error.code, row: error };
+        const facebookLoginError: FacebookLoginError = { message: error.localizedDescription, code: error.code, raw: error };
         failCallback(facebookLoginError);
         return;
       }
@@ -52,14 +71,14 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     };
   }
 
-  public logInWithReadPermissions(permissions: string[]) {
+  public logInWithReadPermissions(permissions: NSArray) {
     if (!this.isInit) {
       return;
     }
     this.loginManager.logInWithReadPermissionsHandler(permissions, this.callbackManager);
   }
 
-  public logInWithPublishPermissions(permissions: string[]) {
+  public logInWithPublishPermissions(permissions: NSArray) {
     if (!this.isInit) {
       return;
     }
