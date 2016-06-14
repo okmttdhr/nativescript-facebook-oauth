@@ -2,7 +2,6 @@ import application = require("application");
 import { IFacebookLoginHandler, FacebookLoginResult, FacebookLoginError } from "./index.d";
 
 declare const com: any;
-declare const java: any;
 declare type AccountKitLoginResult = any
 declare type AccountKitRequestError = any
 

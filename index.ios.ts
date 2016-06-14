@@ -6,12 +6,6 @@ declare const FBSDKApplicationDelegate: any;
 declare const FBSDKLoginManager: any;
 declare type FBSDKLoginManagerLoginResult = any;
 
-declare type NSError = any;
-export declare class UIResponder { any; };
-export declare class UIApplicationDelegate { any; };
-export declare type UIApplication = any;
-export declare type NSDictionary = any;
-
 export class FBDelegate extends UIResponder implements UIApplicationDelegate {
   public static ObjCProtocols = [UIApplicationDelegate];
 
