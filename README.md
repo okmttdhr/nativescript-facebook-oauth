@@ -85,8 +85,8 @@ application.start({ moduleName: "main-page" });
 const FacebookLoginHandler = require("nativescript-facebook-oauth").FacebookLoginHandler;
 
 // コールバックの処理
-const successCallback = function(token) {
-  console.log(token);
+const successCallback = function(result) {
+  console.log(result.token);
 };
 
 const cancelCallback = function() {
@@ -137,9 +137,19 @@ Androidの検証では`sample/app/App_Resources/Android/values/strings.xml`の`{
 
 下記コマンドで実行できます。
 
+### 初回
+
 ```
 cd sample
 tns install
 tns platform add [ios | android]
+tns run [ios | android]
+```
+
+### 2回目以降
+
+```
+cd sample
+tns plugin remove nativescript-facebook-oauth && tns plugin add ../
 tns run [ios | android]
 ```
