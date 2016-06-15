@@ -42,7 +42,7 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     }
   }
 
-  public registerCallback(successCallback: any, cancelCallback: any, failCallback: any) {
+  public registerCallback(successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
     if (!this.isInit) {
       return;
     }
