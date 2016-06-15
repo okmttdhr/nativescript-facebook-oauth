@@ -1,12 +1,12 @@
 export interface IFacebookLoginHandler {
   init: () => boolean;
   registerCallback: (successCallback: any, cancelCallback: any, failCallback: any) => void;
-  logInWithPublishPermissions: (permissions: NSArray) => void;
-  logInWithReadPermissions: (permissions: NSArray) => void;
+  logInWithPublishPermissions: (permissions: string[]) => void;
+  logInWithReadPermissions: (permissions: string[]) => void;
 }
 
 export interface FacebookLoginResult {
-  token: NSString;
+  token: string;
 }
 
 export interface FacebookLoginError {

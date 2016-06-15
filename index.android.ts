@@ -2,14 +2,33 @@ import application = require("application");
 import { IFacebookLoginHandler, FacebookLoginResult, FacebookLoginError } from "./index.d";
 
 declare const com: any;
-declare type AccountKitLoginResult = any
-declare type AccountKitRequestError = any
+interface AccountKitLoginResult {
+  getAccessToken: () => {
+    getToken: () => string;
+  };
+}
+interface AccountKitRequestError {
+  getErrorMessage: () => string;
+  getErrorCode: () => number;
+}
+interface CallbackManager {
+  onActivityResult: (requestCode: number, resultCode: number, data: android.content.Intent) => boolean;
+}
+interface AndroidAppActivity {
+  onActivityResult: (requestCode: number, resultCode: number, data: android.content.Intent) => void;
+}
+interface LoginManager {
+  logOut: () => void;
+  registerCallback: (CallbackManager, FacebookCallback) => void;
+  logInWithReadPermissions: (activity: AndroidAppActivity, permissions: java.util.IList<string>) => void;
+  logInWithPublishPermissions: (activity: AndroidAppActivity, permissions: java.util.IList<string>) => void;
+}
 
 export class FacebookLoginHandler implements IFacebookLoginHandler {
   private isInit: boolean = false;
-  private callbackManager: any;
-  private loginManager: any;
-  private activity: any = application.android.foregroundActivity || application.android.startActivity;
+  private callbackManager: CallbackManager;
+  private loginManager: LoginManager;
+  private activity: AndroidAppActivity = application.android.foregroundActivity || application.android.startActivity;
   public init() {
     try {
       com.facebook.FacebookSdk.sdkInitialize(application.android.context.getApplicationContext());
@@ -40,7 +59,7 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
         failCallback(facebookLoginError);
       }
     }));
-    this.activity.onActivityResult = (requestCode: number, resultCode: number, data: any) => {
+    this.activity.onActivityResult = (requestCode: number, resultCode: number, data: android.content.Intent) => {
       this.callbackManager.onActivityResult(requestCode, resultCode, data);
     };
   }

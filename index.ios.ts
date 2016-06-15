@@ -12,7 +12,7 @@ declare const FBSDKAppEvents: {
 };
 
 interface FBSDKAccessToken {
-  tokenString: NSString;
+  tokenString: string;
 }
 interface FBSDKLoginManagerLoginResult {
   isCancelled: boolean;
@@ -21,8 +21,8 @@ interface FBSDKLoginManagerLoginResult {
 type FBSDKLoginManagerRequestTokenHandler = (result: FBSDKLoginManagerLoginResult, error: NSError) => void;
 declare class FBSDKLoginManager {
   logOut: () => void;
-  logInWithReadPermissionsHandler: (permissions: NSArray, callback: FBSDKLoginManagerRequestTokenHandler) => void;
-  logInWithPublishPermissionsHandler: (permissions: NSArray, callback: FBSDKLoginManagerRequestTokenHandler) => void;
+  logInWithReadPermissionsHandler: (permissions: string[], callback: FBSDKLoginManagerRequestTokenHandler) => void;
+  logInWithPublishPermissionsHandler: (permissions: string[], callback: FBSDKLoginManagerRequestTokenHandler) => void;
 };
 
 export class FBDelegate extends UIResponder implements UIApplicationDelegate {
@@ -71,14 +71,14 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     };
   }
 
-  public logInWithReadPermissions(permissions: NSArray) {
+  public logInWithReadPermissions(permissions: string[]) {
     if (!this.isInit) {
       return;
     }
     this.loginManager.logInWithReadPermissionsHandler(permissions, this.callbackManager);
   }
 
-  public logInWithPublishPermissions(permissions: NSArray) {
+  public logInWithPublishPermissions(permissions: string[]) {
     if (!this.isInit) {
       return;
     }
