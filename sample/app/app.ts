@@ -1,5 +1,5 @@
 ﻿import application = require("application");
-const connectToFacebookDelegate = require("nativescript-facebook-oauth").connectToFacebookDelegate;
+import { connectToFacebookDelegate } from "nativescript-facebook-oauth";
 
 connectToFacebookDelegate();
 application.start({ moduleName: "main-page" });
