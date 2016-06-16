@@ -1,7 +1,7 @@
 import application = require("application");
-import { IFacebookLoginHandler, FacebookLoginResult, FacebookLoginError } from "./index.d";
+import { IFacebookLoginHandler, FacebookLoginResult, FacebookLoginError, IFacebookDelegate } from "./index.d";
 
-export class FBDelegate extends UIResponder implements UIApplicationDelegate {
+class FacebookDelegate extends UIResponder implements UIApplicationDelegate, IFacebookDelegate {
   public static ObjCProtocols = [UIApplicationDelegate];
 
   applicationDidFinishLaunchingWithOptions(application: UIApplication, launchOptions: NSDictionary): boolean {
@@ -10,9 +10,13 @@ export class FBDelegate extends UIResponder implements UIApplicationDelegate {
   applicationOpenURLSourceApplicationAnnotation(application: UIApplication, url: NSURL, sourceApplication: string, annotation: any): boolean {
     return FBSDKApplicationDelegate.sharedInstance().applicationOpenURLSourceApplicationAnnotation(application, url, sourceApplication, annotation);
   }
-  applicationDidBecomeActive(application: UIApplication): void {
+  applicationDidBecomeActive() {
     FBSDKAppEvents.activateApp();
   }
+}
+
+export function connectToFacebookDelegate() {
+  application.ios.delegate = FacebookDelegate;
 }
 
 export class FacebookLoginHandler implements IFacebookLoginHandler {

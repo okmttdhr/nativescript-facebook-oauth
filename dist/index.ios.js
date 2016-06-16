@@ -4,43 +4,43 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var FBDelegate = (function (_super) {
-    __extends(FBDelegate, _super);
-    function FBDelegate() {
+var application = require("application");
+var FacebookDelegate = (function (_super) {
+    __extends(FacebookDelegate, _super);
+    function FacebookDelegate() {
         _super.apply(this, arguments);
     }
-    FBDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) {
+    FacebookDelegate.prototype.applicationDidFinishLaunchingWithOptions = function (application, launchOptions) {
         return FBSDKApplicationDelegate.sharedInstance().applicationDidFinishLaunchingWithOptions(application, launchOptions);
     };
-    FBDelegate.prototype.applicationOpenURLSourceApplicationAnnotation = function (application, url, sourceApplication, annotation) {
+    FacebookDelegate.prototype.applicationOpenURLSourceApplicationAnnotation = function (application, url, sourceApplication, annotation) {
         return FBSDKApplicationDelegate.sharedInstance().applicationOpenURLSourceApplicationAnnotation(application, url, sourceApplication, annotation);
     };
-    FBDelegate.prototype.applicationDidBecomeActive = function (application) {
+    FacebookDelegate.prototype.applicationDidBecomeActive = function () {
         FBSDKAppEvents.activateApp();
     };
-    FBDelegate.ObjCProtocols = [UIApplicationDelegate];
-    return FBDelegate;
+    FacebookDelegate.ObjCProtocols = [UIApplicationDelegate];
+    return FacebookDelegate;
 }(UIResponder));
-exports.FBDelegate = FBDelegate;
+function connectToFacebookDelegate() {
+    application.ios.delegate = FacebookDelegate;
+}
+exports.connectToFacebookDelegate = connectToFacebookDelegate;
 var FacebookLoginHandler = (function () {
     function FacebookLoginHandler() {
-        this.isInit = false;
     }
     FacebookLoginHandler.prototype.init = function () {
-        this.loginManager = FBSDKLoginManager.alloc().init();
+        this.loginManager = new FBSDKLoginManager();
         if (!this.loginManager) {
             return false;
         }
         this.loginManager.logOut();
-        return this.isInit = true;
+        return true;
     };
     FacebookLoginHandler.prototype.registerCallback = function (successCallback, cancelCallback, failCallback) {
-        if (!this.isInit) {
-            return;
-        }
         this.callbackManager = function (result, error) {
             if (error) {
-                var facebookLoginError = { message: error.localizedDescription, code: error.code, row: error };
+                var facebookLoginError = { message: error.localizedDescription, code: error.code, raw: error };
                 failCallback(facebookLoginError);
                 return;
             }
@@ -52,19 +52,21 @@ var FacebookLoginHandler = (function () {
             successCallback(facebookLoginResult);
         };
     };
-    FacebookLoginHandler.prototype.logInWithReadPermissions = function (permissions) {
-        if (!this.isInit) {
+    FacebookLoginHandler.prototype.logInWithReadPermissions = function (permissions, successCallback, cancelCallback, failCallback) {
+        if (!this.init()) {
             return;
         }
+        this.registerCallback(successCallback, cancelCallback, failCallback);
         this.loginManager.logInWithReadPermissionsHandler(permissions, this.callbackManager);
     };
-    FacebookLoginHandler.prototype.logInWithPublishPermissions = function (permissions) {
-        if (!this.isInit) {
+    FacebookLoginHandler.prototype.logInWithPublishPermissions = function (permissions, successCallback, cancelCallback, failCallback) {
+        if (!this.init()) {
             return;
         }
+        this.registerCallback(successCallback, cancelCallback, failCallback);
         this.loginManager.logInWithPublishPermissionsHandler(permissions, this.callbackManager);
     };
     return FacebookLoginHandler;
 }());
 exports.FacebookLoginHandler = FacebookLoginHandler;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguaW9zLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vaW5kZXguaW9zLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7OztBQVFBO0lBQWdDLDhCQUFXO0lBQTNDO1FBQWdDLDhCQUFXO0lBWTNDLENBQUM7SUFUQyw2REFBd0MsR0FBeEMsVUFBeUMsV0FBMEIsRUFBRSxhQUEyQjtRQUM5RixNQUFNLENBQUMsd0JBQXdCLENBQUMsY0FBYyxFQUFFLENBQUMsd0NBQXdDLENBQUMsV0FBVyxFQUFFLGFBQWEsQ0FBQyxDQUFDO0lBQ3hILENBQUM7SUFDRCxrRUFBNkMsR0FBN0MsVUFBOEMsV0FBVyxFQUFFLEdBQUcsRUFBRSxpQkFBaUIsRUFBRSxVQUFVO1FBQzNGLE1BQU0sQ0FBQyx3QkFBd0IsQ0FBQyxjQUFjLEVBQUUsQ0FBQyw2Q0FBNkMsQ0FBQyxXQUFXLEVBQUUsR0FBRyxFQUFFLGlCQUFpQixFQUFFLFVBQVUsQ0FBQyxDQUFDO0lBQ2xKLENBQUM7SUFDRCwrQ0FBMEIsR0FBMUIsVUFBMkIsV0FBMEI7UUFDbkQsY0FBYyxDQUFDLFdBQVcsRUFBRSxDQUFDO0lBQy9CLENBQUM7SUFWYSx3QkFBYSxHQUFHLENBQUMscUJBQXFCLENBQUMsQ0FBQztJQVd4RCxpQkFBQztBQUFELENBQUMsQUFaRCxDQUFnQyxXQUFXLEdBWTFDO0FBWlksa0JBQVUsYUFZdEIsQ0FBQTtBQUVEO0lBQUE7UUFDVSxXQUFNLEdBQVksS0FBSyxDQUFDO0lBNENsQyxDQUFDO0lBekNRLG1DQUFJLEdBQVg7UUFDRSxJQUFJLENBQUMsWUFBWSxHQUFHLGlCQUFpQixDQUFDLEtBQUssRUFBRSxDQUFDLElBQUksRUFBRSxDQUFDO1FBQ3JELEVBQUUsQ0FBQyxDQUFDLENBQUMsSUFBSSxDQUFDLFlBQVksQ0FBQyxDQUFDLENBQUM7WUFDdkIsTUFBTSxDQUFDLEtBQUssQ0FBQztRQUNmLENBQUM7UUFDRCxJQUFJLENBQUMsWUFBWSxDQUFDLE1BQU0sRUFBRSxDQUFDO1FBQzNCLE1BQU0sQ0FBQyxJQUFJLENBQUMsTUFBTSxHQUFHLElBQUksQ0FBQztJQUM1QixDQUFDO0lBRU0sK0NBQWdCLEdBQXZCLFVBQXdCLGVBQW9CLEVBQUUsY0FBbUIsRUFBRSxZQUFpQjtRQUNsRixFQUFFLENBQUMsQ0FBQyxDQUFDLElBQUksQ0FBQyxNQUFNLENBQUMsQ0FBQyxDQUFDO1lBQ2pCLE1BQU0sQ0FBQztRQUNULENBQUM7UUFDRCxJQUFJLENBQUMsZUFBZSxHQUFHLFVBQVMsTUFBb0MsRUFBRSxLQUFjO1lBQ2xGLEVBQUUsQ0FBQyxDQUFDLEtBQUssQ0FBQyxDQUFDLENBQUM7Z0JBQ1YsSUFBTSxrQkFBa0IsR0FBdUIsRUFBRSxPQUFPLEVBQUUsS0FBSyxDQUFDLG9CQUFvQixFQUFFLElBQUksRUFBRSxLQUFLLENBQUMsSUFBSSxFQUFFLEdBQUcsRUFBRSxLQUFLLEVBQUUsQ0FBQztnQkFDckgsWUFBWSxDQUFDLGtCQUFrQixDQUFDLENBQUM7Z0JBQ2pDLE1BQU0sQ0FBQztZQUNULENBQUM7WUFDRCxFQUFFLENBQUMsQ0FBQyxNQUFNLENBQUMsV0FBVyxDQUFDLENBQUMsQ0FBQztnQkFDdkIsY0FBYyxFQUFFLENBQUM7Z0JBQ2pCLE1BQU0sQ0FBQztZQUNULENBQUM7WUFDRCxJQUFNLG1CQUFtQixHQUF3QixFQUFFLEtBQUssRUFBRSxNQUFNLENBQUMsS0FBSyxDQUFDLFdBQVcsRUFBRSxDQUFDO1lBQ3JGLGVBQWUsQ0FBQyxtQkFBbUIsQ0FBQyxDQUFDO1FBQ3ZDLENBQUMsQ0FBQztJQUNKLENBQUM7SUFFTSx1REFBd0IsR0FBL0IsVUFBZ0MsV0FBcUI7UUFDbkQsRUFBRSxDQUFDLENBQUMsQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLENBQUMsQ0FBQztZQUNqQixNQUFNLENBQUM7UUFDVCxDQUFDO1FBQ0QsSUFBSSxDQUFDLFlBQVksQ0FBQywrQkFBK0IsQ0FBQyxXQUFXLEVBQUUsSUFBSSxDQUFDLGVBQWUsQ0FBQyxDQUFDO0lBQ3ZGLENBQUM7SUFFTSwwREFBMkIsR0FBbEMsVUFBbUMsV0FBcUI7UUFDdEQsRUFBRSxDQUFDLENBQUMsQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLENBQUMsQ0FBQztZQUNqQixNQUFNLENBQUM7UUFDVCxDQUFDO1FBQ0QsSUFBSSxDQUFDLFlBQVksQ0FBQyxrQ0FBa0MsQ0FBQyxXQUFXLEVBQUUsSUFBSSxDQUFDLGVBQWUsQ0FBQyxDQUFDO0lBQzFGLENBQUM7SUFDSCwyQkFBQztBQUFELENBQUMsQUE3Q0QsSUE2Q0M7QUE3Q1ksNEJBQW9CLHVCQTZDaEMsQ0FBQSJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguaW9zLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vaW5kZXguaW9zLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7OztBQUFBLElBQU8sV0FBVyxXQUFXLGFBQWEsQ0FBQyxDQUFDO0FBRzVDO0lBQStCLG9DQUFXO0lBQTFDO1FBQStCLDhCQUFXO0lBWTFDLENBQUM7SUFUQyxtRUFBd0MsR0FBeEMsVUFBeUMsV0FBMEIsRUFBRSxhQUEyQjtRQUM5RixNQUFNLENBQUMsd0JBQXdCLENBQUMsY0FBYyxFQUFFLENBQUMsd0NBQXdDLENBQUMsV0FBVyxFQUFFLGFBQWEsQ0FBQyxDQUFDO0lBQ3hILENBQUM7SUFDRCx3RUFBNkMsR0FBN0MsVUFBOEMsV0FBMEIsRUFBRSxHQUFVLEVBQUUsaUJBQXlCLEVBQUUsVUFBZTtRQUM5SCxNQUFNLENBQUMsd0JBQXdCLENBQUMsY0FBYyxFQUFFLENBQUMsNkNBQTZDLENBQUMsV0FBVyxFQUFFLEdBQUcsRUFBRSxpQkFBaUIsRUFBRSxVQUFVLENBQUMsQ0FBQztJQUNsSixDQUFDO0lBQ0QscURBQTBCLEdBQTFCO1FBQ0UsY0FBYyxDQUFDLFdBQVcsRUFBRSxDQUFDO0lBQy9CLENBQUM7SUFWYSw4QkFBYSxHQUFHLENBQUMscUJBQXFCLENBQUMsQ0FBQztJQVd4RCx1QkFBQztBQUFELENBQUMsQUFaRCxDQUErQixXQUFXLEdBWXpDO0FBRUQ7SUFDRSxXQUFXLENBQUMsR0FBRyxDQUFDLFFBQVEsR0FBRyxnQkFBZ0IsQ0FBQztBQUM5QyxDQUFDO0FBRmUsaUNBQXlCLDRCQUV4QyxDQUFBO0FBRUQ7SUFBQTtJQTJDQSxDQUFDO0lBeENDLG1DQUFJLEdBQUo7UUFDRSxJQUFJLENBQUMsWUFBWSxHQUFHLElBQUksaUJBQWlCLEVBQUUsQ0FBQztRQUM1QyxFQUFFLENBQUMsQ0FBQyxDQUFDLElBQUksQ0FBQyxZQUFZLENBQUMsQ0FBQyxDQUFDO1lBQ3ZCLE1BQU0sQ0FBQyxLQUFLLENBQUM7UUFDZixDQUFDO1FBQ0QsSUFBSSxDQUFDLFlBQVksQ0FBQyxNQUFNLEVBQUUsQ0FBQztRQUMzQixNQUFNLENBQUMsSUFBSSxDQUFDO0lBQ2QsQ0FBQztJQUVELCtDQUFnQixHQUFoQixVQUFpQixlQUE4QyxFQUFFLGNBQTBCLEVBQUUsWUFBMEM7UUFDckksSUFBSSxDQUFDLGVBQWUsR0FBRyxVQUFTLE1BQW9DLEVBQUUsS0FBYztZQUNsRixFQUFFLENBQUMsQ0FBQyxLQUFLLENBQUMsQ0FBQyxDQUFDO2dCQUNWLElBQU0sa0JBQWtCLEdBQXVCLEVBQUUsT0FBTyxFQUFFLEtBQUssQ0FBQyxvQkFBb0IsRUFBRSxJQUFJLEVBQUUsS0FBSyxDQUFDLElBQUksRUFBRSxHQUFHLEVBQUUsS0FBSyxFQUFFLENBQUM7Z0JBQ3JILFlBQVksQ0FBQyxrQkFBa0IsQ0FBQyxDQUFDO2dCQUNqQyxNQUFNLENBQUM7WUFDVCxDQUFDO1lBQ0QsRUFBRSxDQUFDLENBQUMsTUFBTSxDQUFDLFdBQVcsQ0FBQyxDQUFDLENBQUM7Z0JBQ3ZCLGNBQWMsRUFBRSxDQUFDO2dCQUNqQixNQUFNLENBQUM7WUFDVCxDQUFDO1lBQ0QsSUFBTSxtQkFBbUIsR0FBd0IsRUFBRSxLQUFLLEVBQUUsTUFBTSxDQUFDLEtBQUssQ0FBQyxXQUFXLEVBQUUsQ0FBQztZQUNyRixlQUFlLENBQUMsbUJBQW1CLENBQUMsQ0FBQztRQUN2QyxDQUFDLENBQUM7SUFDSixDQUFDO0lBRU0sdURBQXdCLEdBQS9CLFVBQWdDLFdBQXFCLEVBQUUsZUFBOEMsRUFBRSxjQUEwQixFQUFFLFlBQTBDO1FBQzNLLEVBQUUsQ0FBQyxDQUFDLENBQUMsSUFBSSxDQUFDLElBQUksRUFBRSxDQUFDLENBQUMsQ0FBQztZQUNqQixNQUFNLENBQUM7UUFDVCxDQUFDO1FBQ0QsSUFBSSxDQUFDLGdCQUFnQixDQUFDLGVBQWUsRUFBRSxjQUFjLEVBQUUsWUFBWSxDQUFDLENBQUM7UUFDckUsSUFBSSxDQUFDLFlBQVksQ0FBQywrQkFBK0IsQ0FBQyxXQUFXLEVBQUUsSUFBSSxDQUFDLGVBQWUsQ0FBQyxDQUFDO0lBQ3ZGLENBQUM7SUFFTSwwREFBMkIsR0FBbEMsVUFBbUMsV0FBcUIsRUFBRSxlQUE4QyxFQUFFLGNBQTBCLEVBQUUsWUFBMEM7UUFDOUssRUFBRSxDQUFDLENBQUMsQ0FBQyxJQUFJLENBQUMsSUFBSSxFQUFFLENBQUMsQ0FBQyxDQUFDO1lBQ2pCLE1BQU0sQ0FBQztRQUNULENBQUM7UUFDRCxJQUFJLENBQUMsZ0JBQWdCLENBQUMsZUFBZSxFQUFFLGNBQWMsRUFBRSxZQUFZLENBQUMsQ0FBQztRQUNyRSxJQUFJLENBQUMsWUFBWSxDQUFDLGtDQUFrQyxDQUFDLFdBQVcsRUFBRSxJQUFJLENBQUMsZUFBZSxDQUFDLENBQUM7SUFDMUYsQ0FBQztJQUNILDJCQUFDO0FBQUQsQ0FBQyxBQTNDRCxJQTJDQztBQTNDWSw0QkFBb0IsdUJBMkNoQyxDQUFBIn0=

@@ -1,8 +1,11 @@
 import application = require("application");
 import { IFacebookLoginHandler, FacebookLoginResult, FacebookLoginError } from "./index.d";
 
+export function connectToFacebookDelegate() {
+  return;
+}
+
 export class FacebookLoginHandler implements IFacebookLoginHandler {
-  private isInit: boolean = false;
   private callbackManager: CallbackManager;
   private loginManager: LoginManager;
   private activity: AndroidAppActivity = application.android.foregroundActivity || application.android.startActivity;

@@ -1,8 +1,5 @@
 ﻿import application = require("application");
-const FBDelegate = require("nativescript-facebook-oauth").FBDelegate;
+const connectToFacebookDelegate = require("nativescript-facebook-oauth").connectToFacebookDelegate;
 
-if (application.ios) {
-  application.ios.delegate = FBDelegate;
-}
-
+connectToFacebookDelegate();
 application.start({ moduleName: "main-page" });

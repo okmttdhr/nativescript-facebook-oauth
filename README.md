@@ -72,9 +72,9 @@ npm install nativescript-facebook-oauth
 下記のコードを追加し、Objective-Cの`AppDelegate`クラスを`FBSDKApplicationDelegate`にひも付けてください。
 
 ```js
-const FBDelegate = require("nativescript-facebook-oauth").FBDelegate;
+const FacebookDelegate = require("nativescript-facebook-oauth").FacebookDelegate;
 if (application.ios) {
-  application.ios.delegate = FBDelegate;
+  application.ios.delegate = FacebookDelegate;
 }
 application.start({ moduleName: "main-page" });
 ```

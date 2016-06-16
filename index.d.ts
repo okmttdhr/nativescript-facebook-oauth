@@ -15,13 +15,13 @@ export interface FacebookLoginError {
   raw: any;
 }
 
-interface IFBDelegate {
-  applicationDidFinishLaunchingWithOptions: () => boolean;
-  applicationOpenURLSourceApplicationAnnotation: () => void;
+export interface IFacebookDelegate {
+  applicationDidFinishLaunchingWithOptions: (application: UIApplication, launchOptions: NSDictionary) => boolean;
+  applicationOpenURLSourceApplicationAnnotation: (application: UIApplication, url: NSURL, sourceApplication: string, annotation: any) => void;
   applicationDidBecomeActive: () => void;
 }
 
 declare module "nativescript-facebook-oauth" {
   export const FacebookLoginHandler: IFacebookLoginHandler;
-  export const FBDelegate: IFBDelegate;
+  export const connectToFacebookDelegate: () => void;
 }
