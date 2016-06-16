@@ -1,15 +1,15 @@
 export interface IFacebookLoginHandler {
   init: () => boolean;
-  registerCallback: (successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) => void;
-  logInWithPublishPermissions: (permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) => void;
-  logInWithReadPermissions: (permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) => void;
+  registerCallback: (successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) => void;
+  logInWithPublishPermissions: (permissions: string[], successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) => void;
+  logInWithReadPermissions: (permissions: string[], successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) => void;
 }
 
-export interface FacebookLoginResult {
+export interface LoginResult {
   token: string;
 }
 
-export interface FacebookLoginError {
+export interface LoginError {
   message: string;
   code: number;
   raw: any;
@@ -21,7 +21,11 @@ export interface IFacebookDelegate {
   applicationDidBecomeActive: () => void;
 }
 
-export interface NativescriptFacebookOauth {
-  FacebookLoginHandler: IFacebookLoginHandler;
-  connectToFacebookDelegate: () => void;
+export class FacebookLoginHandler implements IFacebookLoginHandler {
+  init: () => boolean;
+  registerCallback: (successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) => void;
+  logInWithPublishPermissions: (permissions: string[], successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) => void;
+  logInWithReadPermissions: (permissions: string[], successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) => void;
 }
+
+export function connectToFacebookDelegate(): () => void;

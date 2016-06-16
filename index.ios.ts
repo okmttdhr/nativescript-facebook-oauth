@@ -1,5 +1,5 @@
 import application = require("application");
-import { IFacebookLoginHandler, FacebookLoginResult, FacebookLoginError, IFacebookDelegate } from "./index.d";
+import { IFacebookLoginHandler, LoginResult, LoginError, IFacebookDelegate } from "./index.d";
 
 class FacebookDelegate extends UIResponder implements UIApplicationDelegate, IFacebookDelegate {
   public static ObjCProtocols = [UIApplicationDelegate];
@@ -31,23 +31,23 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     return true;
   }
 
-  registerCallback(successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
+  registerCallback(successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) {
     this.callbackManager = function(result: FBSDKLoginManagerLoginResult, error: NSError) {
       if (error) {
-        const facebookLoginError: FacebookLoginError = { message: error.localizedDescription, code: error.code, raw: error };
-        failCallback(facebookLoginError);
+        const LoginError: LoginError = { message: error.localizedDescription, code: error.code, raw: error };
+        failCallback(LoginError);
         return;
       }
       if (result.isCancelled) {
         cancelCallback();
         return;
       }
-      const facebookLoginResult: FacebookLoginResult = { token: result.token.tokenString };
-      successCallback(facebookLoginResult);
+      const LoginResult: LoginResult = { token: result.token.tokenString };
+      successCallback(LoginResult);
     };
   }
 
-  public logInWithReadPermissions(permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
+  public logInWithReadPermissions(permissions: string[], successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) {
     if (!this.init()) {
       return;
     }
@@ -55,7 +55,7 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     this.loginManager.logInWithReadPermissionsHandler(permissions, this.callbackManager);
   }
 
-  public logInWithPublishPermissions(permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
+  public logInWithPublishPermissions(permissions: string[], successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) {
     if (!this.init()) {
       return;
     }

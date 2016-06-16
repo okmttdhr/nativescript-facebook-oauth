@@ -1,5 +1,5 @@
 import application = require("application");
-import { IFacebookLoginHandler, FacebookLoginResult, FacebookLoginError } from "./index.d";
+import { IFacebookLoginHandler, LoginResult, LoginError } from "./index.d";
 
 export function connectToFacebookDelegate() {
   return;
@@ -21,18 +21,18 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     }
   }
 
-  registerCallback(successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
+  registerCallback(successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) {
     this.loginManager.registerCallback(this.callbackManager, new com.facebook.FacebookCallback({
       onSuccess: function(result: AccountKitLoginResult) {
-        const facebookLoginResult: FacebookLoginResult = { token: result.getAccessToken().getToken() };
-        successCallback(facebookLoginResult);
+        const LoginResult: LoginResult = { token: result.getAccessToken().getToken() };
+        successCallback(LoginResult);
       },
       onCancel: function() {
         cancelCallback();
       },
       onError: function(error: AccountKitRequestError) {
-        const facebookLoginError: FacebookLoginError = { message: error.getErrorMessage(), code: error.getErrorCode(), raw: error };
-        failCallback(facebookLoginError);
+        const LoginError: LoginError = { message: error.getErrorMessage(), code: error.getErrorCode(), raw: error };
+        failCallback(LoginError);
       }
     }));
     this.activity.onActivityResult = (requestCode: number, resultCode: number, data: android.content.Intent) => {
@@ -40,7 +40,7 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     };
   }
 
-  public logInWithReadPermissions(permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
+  public logInWithReadPermissions(permissions: string[], successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) {
     if (!this.init()) {
       return;
     }
@@ -49,7 +49,7 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     this.loginManager.logInWithReadPermissions(this.activity, javaPermissions);
   }
 
-  public logInWithPublishPermissions(permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
+  public logInWithPublishPermissions(permissions: string[], successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) {
     if (!this.init()) {
       return;
     }
