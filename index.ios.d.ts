@@ -25,3 +25,9 @@ declare class FBSDKLoginManager {
   logInWithReadPermissionsHandler: (permissions: string[], callback: FBSDKLoginManagerRequestTokenHandler) => void;
   logInWithPublishPermissionsHandler: (permissions: string[], callback: FBSDKLoginManagerRequestTokenHandler) => void;
 }
+
+interface IFacebookDelegate {
+  applicationDidFinishLaunchingWithOptions: (application: UIApplication, launchOptions: NSDictionary) => boolean;
+  applicationOpenURLSourceApplicationAnnotation: (application: UIApplication, url: NSURL, sourceApplication: string, annotation: any) => void;
+  applicationDidBecomeActive: () => void;
+}

@@ -1,5 +1,5 @@
 import application = require("application");
-import { IFacebookLoginHandler, LoginResult, LoginError, IFacebookDelegate } from "./index.d";
+import { IFacebookLoginHandler, LoginResult, LoginError } from "./index.d";
 
 class FacebookDelegate extends UIResponder implements UIApplicationDelegate, IFacebookDelegate {
   public static ObjCProtocols = [UIApplicationDelegate];

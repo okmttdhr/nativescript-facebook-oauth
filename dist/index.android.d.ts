@@ -1,4 +1,11 @@
-export declare function init(loginBehavior?: any): boolean;
-export declare function registerCallback(successCallback: any, cancelCallback: any, failCallback: any): void;
-export declare function logInWithPublishPermissions(permissions: string[]): void;
-export declare function logInWithReadPermissions(permissions: string[]): void;
+import { IFacebookLoginHandler } from "./index.d";
+export declare function connectToFacebookDelegate(): void;
+export declare class FacebookLoginHandler implements IFacebookLoginHandler {
+    private callbackManager;
+    private loginManager;
+    private activity;
+    init(): boolean;
+    registerCallback(successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void): void;
+    logInWithReadPermissions(permissions: string[], successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void): void;
+    logInWithPublishPermissions(permissions: string[], successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void): void;
+}

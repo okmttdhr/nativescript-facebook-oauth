@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "nativescript-facebook-oauth": "file:..",
-    "tns-core-modules": "2.0.1"
+    "tns-core-modules": "2.0.1",
+    "tns-platform-declarations": "^2.0.0"
   },
   "devDependencies": {
     "babel-traverse": "6.9.0",
