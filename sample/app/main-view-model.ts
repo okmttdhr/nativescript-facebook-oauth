@@ -21,8 +21,6 @@ export class HelloWorldModel extends observable.Observable {
 
     public login() {
         const facebookLoginHandler = new FacebookLoginHandler();
-        facebookLoginHandler.init();
-        facebookLoginHandler.registerCallback(this.successCallback, this.cancelCallback, this.failCallback);
-        facebookLoginHandler.logInWithReadPermissions(["email"]);
+        facebookLoginHandler.logInWithReadPermissions(["email"], this.successCallback, this.cancelCallback, this.failCallback);
     }
 }

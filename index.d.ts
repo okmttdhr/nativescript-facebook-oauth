@@ -1,8 +1,8 @@
 export interface IFacebookLoginHandler {
   init: () => boolean;
   registerCallback: (successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) => void;
-  logInWithPublishPermissions: (permissions: string[]) => void;
-  logInWithReadPermissions: (permissions: string[]) => void;
+  logInWithPublishPermissions: (permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) => void;
+  logInWithReadPermissions: (permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) => void;
 }
 
 export interface FacebookLoginResult {

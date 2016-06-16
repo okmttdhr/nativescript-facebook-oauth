@@ -16,22 +16,18 @@ export class FBDelegate extends UIResponder implements UIApplicationDelegate {
 }
 
 export class FacebookLoginHandler implements IFacebookLoginHandler {
-  private isInit: boolean = false;
   private callbackManager: FBSDKLoginManagerRequestTokenHandler;
   private loginManager: FBSDKLoginManager;
-  public init() {
+  init() {
     this.loginManager = new FBSDKLoginManager();
     if (!this.loginManager) {
       return false;
     }
     this.loginManager.logOut();
-    return this.isInit = true;
+    return true;
   }
 
-  public registerCallback(successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
-    if (!this.isInit) {
-      return;
-    }
+  registerCallback(successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
     this.callbackManager = function(result: FBSDKLoginManagerLoginResult, error: NSError) {
       if (error) {
         const facebookLoginError: FacebookLoginError = { message: error.localizedDescription, code: error.code, raw: error };
@@ -47,17 +43,19 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     };
   }
 
-  public logInWithReadPermissions(permissions: string[]) {
-    if (!this.isInit) {
+  public logInWithReadPermissions(permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
+    if (!this.init()) {
       return;
     }
+    this.registerCallback(successCallback, cancelCallback, failCallback);
     this.loginManager.logInWithReadPermissionsHandler(permissions, this.callbackManager);
   }
 
-  public logInWithPublishPermissions(permissions: string[]) {
-    if (!this.isInit) {
+  public logInWithPublishPermissions(permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
+    if (!this.init()) {
       return;
     }
+    this.registerCallback(successCallback, cancelCallback, failCallback);
     this.loginManager.logInWithPublishPermissionsHandler(permissions, this.callbackManager);
   }
 }

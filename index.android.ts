@@ -6,23 +6,19 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
   private callbackManager: CallbackManager;
   private loginManager: LoginManager;
   private activity: AndroidAppActivity = application.android.foregroundActivity || application.android.startActivity;
-  public init() {
+  init() {
     try {
       com.facebook.FacebookSdk.sdkInitialize(application.android.context.getApplicationContext());
       this.callbackManager = com.facebook.CallbackManager.Factory.create();
       this.loginManager = com.facebook.login.LoginManager.getInstance();
       this.loginManager.logOut();
-
-      return this.isInit = true;
+      return true;
     } catch (e) {
       return false;
     }
   }
 
-  public registerCallback(successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
-    if (!this.isInit) {
-      return;
-    }
+  registerCallback(successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
     this.loginManager.registerCallback(this.callbackManager, new com.facebook.FacebookCallback({
       onSuccess: function(result: AccountKitLoginResult) {
         const facebookLoginResult: FacebookLoginResult = { token: result.getAccessToken().getToken() };
@@ -41,18 +37,20 @@ export class FacebookLoginHandler implements IFacebookLoginHandler {
     };
   }
 
-  public logInWithReadPermissions(permissions: string[]) {
-    if (!this.isInit) {
+  public logInWithReadPermissions(permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
+    if (!this.init()) {
       return;
     }
+    this.registerCallback(successCallback, cancelCallback, failCallback);
     const javaPermissions = java.util.Arrays.asList(permissions);
     this.loginManager.logInWithReadPermissions(this.activity, javaPermissions);
   }
 
-  public logInWithPublishPermissions(permissions: string[]) {
-    if (!this.isInit) {
+  public logInWithPublishPermissions(permissions: string[], successCallback: (FacebookLoginResult) => void, cancelCallback: () => void, failCallback: (FacebookLoginError) => void) {
+    if (!this.init()) {
       return;
     }
+    this.registerCallback(successCallback, cancelCallback, failCallback);
     const javaPermissions = java.util.Arrays.asList(permissions);
     this.loginManager.logInWithPublishPermissions(this.activity, javaPermissions);
   }
