@@ -21,7 +21,7 @@ export interface IFacebookDelegate {
   applicationDidBecomeActive: () => void;
 }
 
-declare module "nativescript-facebook-oauth" {
-  export const FacebookLoginHandler: IFacebookLoginHandler;
-  export const connectToFacebookDelegate: () => void;
+export interface NativescriptFacebookOauth {
+  FacebookLoginHandler: IFacebookLoginHandler;
+  connectToFacebookDelegate: () => void;
 }
