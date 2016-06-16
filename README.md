@@ -44,7 +44,7 @@ npm install nativescript-facebook-oauth
 
 ### iOS
 
-`your_app/App_Resources/iOS/Info.plist`の最下部にある`</dict>`の前に下記のコードを追加してください。
+`your_app/App_Resources/iOS/Info.plist`の最下部にある`</dict>`の前に下記のコードを追加してください([詳細](https://developers.facebook.com/docs/ios/getting-started#configure-xcode-project))。
 
 ```xml
 <key>CFBundleURLTypes</key>
@@ -69,20 +69,18 @@ npm install nativescript-facebook-oauth
 </array>
 ```
 
-下記のコードを追加し、Objective-Cの`AppDelegate`クラスを`FBSDKApplicationDelegate`にひも付けてください。
+下記のコードを追加し、Objective-Cの`AppDelegate`クラスを`FBSDKApplicationDelegate`にconnectしてください([詳細](https://developers.facebook.com/docs/ios/getting-started#connect-app-delegate))。
 
 ```js
-const FacebookDelegate = require("nativescript-facebook-oauth").FacebookDelegate;
-if (application.ios) {
-  application.ios.delegate = FacebookDelegate;
-}
+import { connectToFacebookDelegate } from "nativescript-facebook-oauth";
+connectToFacebookDelegate();
 application.start({ moduleName: "main-page" });
 ```
 
 ### Android/iOS共通
 
 ```js
-const FacebookLoginHandler = require("nativescript-facebook-oauth").FacebookLoginHandler;
+import { FacebookLoginHandler } from "nativescript-facebook-oauth";
 
 // コールバックの処理
 const successCallback = function(result) {
@@ -94,16 +92,12 @@ const cancelCallback = function() {
 };
 
 const failCallback = function(error) {
-  console.log(errorMessage);
+  console.log(error);
 };
 
 // ログインの処理
 const facebookLoginHandler = new FacebookLoginHandler();
-facebookLoginHandler.init();
-facebookLoginHandler.registerCallback(successCallback, cancelCallback, failCallback);
-
-// Permissionsを追加 https://developers.facebook.com/docs/facebook-login/permissions
-facebookLoginHandler.logInWithReadPermissions(["email"]);
+facebookLoginHandler.logInWithReadPermissions(["email"], successCallback, cancelCallback, failCallback); // Permissionsを追加 https://developers.facebook.com/docs/facebook-login/permissions
 ```
 
 
