@@ -16,8 +16,8 @@
       "version": "2.0.1"
     }
   },
-  "author": "",
-  "license": "",
+  "author": "okp",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^1.8.10"
   },
