@@ -1,13 +1,3 @@
-export interface LoginResult {
-  token: string;
-}
-
-export interface LoginError {
-  message: string;
-  code: number;
-  raw: any;
-}
-
 export interface IFacebookLoginHandler {
   init: () => boolean;
   registerCallback: (successCallback: (LoginResult) => void, cancelCallback: () => void, failCallback: (LoginError) => void) => void;

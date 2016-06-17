@@ -1,5 +1,5 @@
 import application = require("application");
-import { IFacebookLoginHandler, LoginResult, LoginError } from "./index.d";
+import { IFacebookLoginHandler } from "./index.d";
 
 export function connectToFacebookDelegate() {
   return;
