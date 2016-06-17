@@ -1,0 +1,7 @@
+dist/*.d.ts
+sample/platforms/
+sample/lib/
+sample/hooks/
+sample/app/*.js
+sample/app/*.js.map
+sample/app/*.d.ts
